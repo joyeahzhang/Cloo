@@ -12,8 +12,7 @@ class Channel;
 class EventLoop final : public std::enable_shared_from_this<EventLoop>
 {
 public:
-    // 利用工厂函数实现两段式构造, 避免在构造函数中使用shared_from_this
-    static std::shared_ptr<EventLoop> Create();
+
     EventLoop() = default;
     ~EventLoop();
     // 不可拷贝
@@ -22,7 +21,8 @@ public:
     EventLoop& operator=(const EventLoop&) = delete;
     EventLoop& operator=(const EventLoop&&) = delete;
     
-    void Init();
+    // 利用工厂函数实现两段式构造, 避免在构造函数中使用shared_from_this
+    static std::shared_ptr<EventLoop> Create();
 
     // Loop是EventLoop的核心函数, 它几乎是一个不会停止的循环(除非主动调用Quit()使其退出)
     // Loop在每次迭代中都从IO多路复用组件中获取活动事件(由active_channels转发)

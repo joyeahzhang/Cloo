@@ -44,17 +44,6 @@ EventLoop::~EventLoop()
     T_LOOP_IN_THIS_THREAD = nullptr;
 }
 
-void EventLoop::Init()
-{
-    looping_ = false;
-    quit_ = false;
-    thread_id_ = this_thread::get_id();
-    poller_ = make_unique<Poller>(shared_from_this());
-    active_channels_ = make_shared<ChannelList>();
-    
-
-}
-
 void EventLoop::Loop()
 {
     assert(!looping_);
