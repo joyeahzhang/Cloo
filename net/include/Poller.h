@@ -35,24 +35,28 @@ public:
     // 有需要处理的IO事件的fd所关联的Channel会被加入到activeChannels中
     // Notice: Poll必须在EventLoop所在的IO线程中被调用
     // Question: 如果不在EventLoop所在的IO线程中被调用会发生什么?
-    TimePoint Poll(int timeoutMs, const std::shared_ptr<ChannelList>& activeChannels);
+    TimePoint Poll(int timeout_ms, const std::shared_ptr<ChannelList>& active_channels);
     
     // 通过Channel来更新和维护pollfds_列表, 过程中涉及多处修改, 详细内容见实现
     void UpdateChannel(const std::shared_ptr<Channel>& channel);
 
     void AssertInLoopTread()
     {
-        ownerLoop_->AssertInLoopTread();
+        if(auto loop = owner_loop_.lock())
+        {
+            loop->AssertInLoopTread();
+        }
+
     }
 
 private:  
     // 遍历pollfds_列表, 找出具有活动事件的fd, 把fd的活动事件填入关联的Channel, 然后把Channel填入到activeChannels中
-    void fillActiveChannels(int numEvents, const std::shared_ptr<ChannelList>& activeChannels) const;
+    void fillActiveChannels(int numEvents, const std::shared_ptr<ChannelList>& active_channels) const;
 
     using PollFdList = std::vector<pollfd>;
     using ChannelMap = std::map<int, std::shared_ptr<Channel>>; 
     // Poller所属的EventLoop
-    std::shared_ptr<EventLoop> ownerLoop_;  
+    std::weak_ptr<EventLoop> owner_loop_;  
     // poll(2)所使用的文件描述符集合,所有需要有IO操作的文件描述符都会被注册到pollfds中
     PollFdList pollfds_; 
     // pollfds中fd所关联的channel的map, poll(2)返回的fd的IO事件会被注册到channel中,由channel“转发”给用户注册的回调函数

@@ -16,8 +16,27 @@ thread_local shared_ptr<EventLoop> T_LOOP_IN_THIS_THREAD = nullptr;
 // Poll超时时间(ms)
 const int K_POLL_TIMEOUT_MS = 10000;
 
-EventLoop::EventLoop() 
-{}
+std::shared_ptr<EventLoop> EventLoop::Create()
+{
+    auto loop = make_shared<EventLoop>();
+    loop->looping_ = false;
+    loop->quit_ = false;
+    loop->thread_id_ = this_thread::get_id();
+    loop->poller_ = make_unique<Poller>(loop);
+    loop->active_channels_ = make_shared<ChannelList>();
+
+    cout<<"EventLoop created " << loop.get() << " in thread " << loop->thread_id_ <<endl;
+    if(T_LOOP_IN_THIS_THREAD)
+    {
+        cerr<<"Another EventLoop " << T_LOOP_IN_THIS_THREAD << " exists in this thread " << loop->thread_id_ << endl;
+        abort();
+    }
+    else
+    {
+        T_LOOP_IN_THIS_THREAD = loop;
+    }
+    return loop;
+}
 
 EventLoop::~EventLoop()
 {
@@ -33,16 +52,7 @@ void EventLoop::Init()
     poller_ = make_unique<Poller>(shared_from_this());
     active_channels_ = make_shared<ChannelList>();
     
-    cout<<"EventLoop inited " << this << " in thread " << thread_id_ <<endl;
-    if(T_LOOP_IN_THIS_THREAD)
-    {
-        cerr<<"Another EventLoop " << T_LOOP_IN_THIS_THREAD << " exists in this thread " << thread_id_ << endl;
-        abort();
-    }
-    else
-    {
-        T_LOOP_IN_THIS_THREAD = shared_from_this();
-    }
+
 }
 
 void EventLoop::Loop()

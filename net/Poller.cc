@@ -13,7 +13,7 @@ using namespace Cloo;
 using namespace std;
 
 Poller::Poller(const shared_ptr<EventLoop>& loop)
-    : ownerLoop_(loop)
+    : owner_loop_(loop)
 {
 
 }
@@ -23,16 +23,16 @@ Poller::~Poller()
 
 }
 
-Poller::TimePoint Poller::Poll(int timeoutMs, const std::shared_ptr<ChannelList>& activeChannels)
+Poller::TimePoint Poller::Poll(int timeout_ms, const std::shared_ptr<ChannelList>& active_channels)
 {
-    int numEvents = ::poll(pollfds_.data(), pollfds_.size(), timeoutMs);
+    int num_events = ::poll(pollfds_.data(), pollfds_.size(), timeout_ms);
     auto now = chrono::system_clock::now();
-    if(numEvents > 0)
+    if(num_events > 0)
     {
-        cout << numEvents << " events happened" << endl; 
-        fillActiveChannels(numEvents, activeChannels);
+        cout << num_events << " events happened" << endl; 
+        fillActiveChannels(num_events, active_channels);
     }
-    else if(numEvents == 0)
+    else if(num_events == 0)
     {
         cout << "nothing happened" <<endl;
     }
@@ -44,20 +44,20 @@ Poller::TimePoint Poller::Poll(int timeoutMs, const std::shared_ptr<ChannelList>
 }
 
 
-void Poller::fillActiveChannels(int numEvents, const shared_ptr<ChannelList>& activeChannels) const
+void Poller::fillActiveChannels(int num_events, const shared_ptr<ChannelList>& active_channels) const
 {
-    for(auto iter = pollfds_.begin(); iter != pollfds_.end() && numEvents > 0; iter++)
+    for(auto iter = pollfds_.begin(); iter != pollfds_.end() && num_events > 0; iter++)
     {
         if(iter->revents > 0)
         {
             // 在numEvents == 0时结束循环, 避免在已经处理完所有poll返回的pollfd后
             // 对pollfds做无效地遍历
-            --numEvents;
+            --num_events;
             assert(channels_.count(iter->fd) != 0);
             auto channel = channels_.find(iter->fd)->second;
             assert(channel->Fd() == iter->fd);
             channel->SetRevents(iter->revents);
-            activeChannels->push_back(channel);
+            active_channels->push_back(channel);
         }
     }
 }

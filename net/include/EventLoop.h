@@ -12,7 +12,9 @@ class Channel;
 class EventLoop final : public std::enable_shared_from_this<EventLoop>
 {
 public:
-    EventLoop();
+    // 利用工厂函数实现两段式构造, 避免在构造函数中使用shared_from_this
+    static std::shared_ptr<EventLoop> Create();
+    EventLoop() = default;
     ~EventLoop();
     // 不可拷贝
     EventLoop(const EventLoop&) = delete;
