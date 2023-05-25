@@ -56,11 +56,12 @@ int main()
 
 # 问题解决
 虽然我们已经分析出了`bad_weak_ptr`异常的原因，也知道了基本的处理方法(只在存在`shared_ptr`指向对象时，才调用`shared_from_this()`)，但是很多时候我们并不能保证随时都能遵循这些准则(各种原因...)
+
 有没有一种方法能够让我们在使用继承了`enable_shared_from_this`基类的class的object时一定保证已经存在一个`shared_ptr`指向它呢？
 
 根据《Effective Modern C++》Item 19中的建议，我们需要使用做两件事：
-    1. 将继承了`enable_shared_from_this`基类的class的构造函数声明为private
-    2. 提供一个工厂方法来创建对象，工厂方法返回 `shared_ptr`
+1. 将继承了`enable_shared_from_this`基类的class的构造函数声明为private
+2. 提供一个工厂方法来创建对象，工厂方法返回 `shared_ptr`
 例如：
 ```cpp
 class EventLoop : public enable_shared_from_this
