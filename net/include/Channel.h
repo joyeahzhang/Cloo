@@ -14,7 +14,7 @@ using EventCallBack = std::function<void()>;
 
 public:
 
-Channel(const std::shared_ptr<EventLoop>& loop, int fd);
+static std::shared_ptr<Channel> Create(const std::shared_ptr<EventLoop>& loop, int fd);
 
 void HandleEvent();
 // 设置IO事件回调函数
@@ -39,16 +39,22 @@ int Index() const { return index_; }
 void SetIndex(int index) { index_ = index; }
 
 // channel所属的EventLoop
-const std::shared_ptr<EventLoop>& OwnerLoop() const { return owner_loop_; };
+std::shared_ptr<EventLoop> OwnerLoop() const 
+{ 
+    return owner_loop_.lock(); 
+};
 
 private:
+    
+    Channel(const std::shared_ptr<EventLoop>& loop, int fd);
+
     void update();
 
     static const int kNoneEvent;
     static const int kReadEvent;
     static const int kWriteEvent;
 
-    std::shared_ptr<EventLoop> owner_loop_;
+    std::weak_ptr<EventLoop> owner_loop_;
     const int fd_;
     int events_;
     int revents_;

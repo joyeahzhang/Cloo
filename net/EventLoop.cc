@@ -1,6 +1,10 @@
 #include "include/EventLoop.h"
 #include "include/Poller.h"
 #include "include/Channel.h"
+#include "include/TimerId.h"
+#include "include/TimerQueue.h"
+
+#include <chrono>
 #include <cstdlib>
 #include <iostream>
 #include <cassert>
@@ -18,13 +22,13 @@ const int K_POLL_TIMEOUT_MS = 10000;
 
 std::shared_ptr<EventLoop> EventLoop::Create()
 {
-    auto loop = make_shared<EventLoop>();
+    auto loop = shared_ptr<EventLoop>(new EventLoop());
     loop->looping_ = false;
     loop->quit_ = false;
     loop->thread_id_ = this_thread::get_id();
     loop->poller_ = make_unique<Poller>(loop);
     loop->active_channels_ = make_shared<ChannelList>();
-
+    loop->timer_queue_ = make_unique<TimerQueue>(loop);
     cout<<"EventLoop created " << loop.get() << " in thread " << loop->thread_id_ <<endl;
     if(T_LOOP_IN_THIS_THREAD)
     {
@@ -57,7 +61,7 @@ void EventLoop::Loop()
         // 通过poll(2)IO多路复用获取当前有活动事件的fd, 将活动事件通过channel转发过来
         poller_->Poll(K_POLL_TIMEOUT_MS, active_channels_);
         // 直接在IO线程中利用用户在channel中注册的callback function处理channel转发的IO事件
-        std::for_each(active_channels_->begin(), active_channels_->end(), [&](const auto& channel){channel->HandleEvent();});
+        std::for_each(active_channels_->begin(), active_channels_->end(), [](const auto& channel){channel->HandleEvent();});
     }
     cout << "EventLoop " << this << " stop looping" << endl;
     looping_ = false;
@@ -81,4 +85,21 @@ void EventLoop::abortNotInLoopThread()
   cerr << "EventLoop::abortNotInLoopThread - EventLoop " << this
        << " was created in threadId_ = " << thread_id_
        << ", current thread id = " <<  this_thread::get_id() << endl;
+}
+
+TimerId EventLoop::RunAt(const define::SystemTimePoint time, const define::TimerCallback& cb)
+{
+    return timer_queue_->AddTimer(cb, time, 0);
+}
+
+TimerId EventLoop::RunAfter(long delay_ms, const define::TimerCallback& cb)
+{
+    auto expiration = std::chrono::system_clock::now() + std::chrono::milliseconds(delay_ms);
+    return timer_queue_->AddTimer(cb, expiration, 0);
+}
+
+TimerId EventLoop::RunEvery(long interval_ms, const define::TimerCallback& cb)
+{
+    auto expiration = std::chrono::system_clock::now() + std::chrono::milliseconds(interval_ms);
+    return timer_queue_->AddTimer(cb, expiration, interval_ms);
 }

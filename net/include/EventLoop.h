@@ -1,19 +1,23 @@
 #pragma once
 
+#include <chrono>
 #include <memory>
 #include <thread>
 #include <vector>
+#include "CallbackDefs.h"
+#include "TimeDefs.h"
+#include "TimerId.h"
 
 namespace Cloo 
 {
 // 前向声明简化头文件关系
 class Poller;
 class Channel;
+class TimerQueue;
+
 class EventLoop final : public std::enable_shared_from_this<EventLoop>
 {
 public:
-
-    EventLoop() = default;
     ~EventLoop();
     // 不可拷贝
     EventLoop(const EventLoop&) = delete;
@@ -58,7 +62,15 @@ public:
         quit_ = true;
     }
 
+    define::SystemTimePoint PollReturnTime() const { return poll_return_time_; }
+
+    // 定时器相关
+    TimerId RunAt(const define::SystemTimePoint time, const define::TimerCallback& cb);
+    TimerId RunAfter(long delay_ms, const define::TimerCallback& cb);
+    TimerId RunEvery(long interval_ms, const define::TimerCallback& cb);
+
 private:
+    EventLoop() = default;
     void abortNotInLoopThread();
 
     using ChannelList = std::vector<std::shared_ptr<Channel>>;
@@ -68,10 +80,13 @@ private:
     // IO多路复用的组件
     // EventLoop拥有Poller的唯一所有权, 因此通过unique_ptr来管理
     std::unique_ptr<Poller> poller_;
+    define::SystemTimePoint poll_return_time_;
     // 存放正在“转发”活跃IO事件的channel
     // 由poller_负责更新
     // Fixme: EventLoop应该拥有active_channels的唯一所有权, 但是这里似乎使用shared_ptr更加合适 
     std::shared_ptr<ChannelList> active_channels_;
+
+    std::unique_ptr<TimerQueue> timer_queue_;
 };
 
 
