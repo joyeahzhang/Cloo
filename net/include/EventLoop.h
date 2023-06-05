@@ -4,6 +4,8 @@
 #include <memory>
 #include <thread>
 #include <vector>
+#include <mutex>
+
 #include "CallbackDefs.h"
 #include "TimeDefs.h"
 #include "TimerId.h"
@@ -42,7 +44,7 @@ public:
     {
         if(!IsInLoopThread())
         {
-            abortNotInLoopThread();
+            AbortNotInLoopThread();
         }
     }
 
@@ -57,12 +59,15 @@ public:
 
     // 向EventLoop下达停止loop的命令, EventLoop会在下个loop迭代时停止循环
     // EventLoop可能不会立即停止loop, 因为它可能正在处理某个IO事件,需要耗时一段时间才能开始下一轮迭代
-    void Quit()
-    {
-        quit_ = true;
-    }
+    void Quit();
 
     define::SystemTimePoint PollReturnTime() const { return poll_return_time_; }
+
+    void RunTaskInThisLoop(const define::IOEventCallback& task);
+
+    void QueueTaskInThisLoop(const define::IOEventCallback& task);
+
+    void WakeUp();
 
     // 定时器相关
     TimerId RunAt(const define::SystemTimePoint time, const define::TimerCallback& cb);
@@ -71,11 +76,14 @@ public:
 
 private:
     EventLoop() = default;
-    void abortNotInLoopThread();
+    void AbortNotInLoopThread();
+    void HandleWakeUp();
+    void DoPendingTasks();
 
     using ChannelList = std::vector<std::shared_ptr<Channel>>;
     bool looping_;
     bool quit_;
+    bool handling_pending_tasks_;
     std::thread::id thread_id_;
     // IO多路复用的组件
     // EventLoop拥有Poller的唯一所有权, 因此通过unique_ptr来管理
@@ -87,6 +95,11 @@ private:
     std::shared_ptr<ChannelList> active_channels_;
 
     std::unique_ptr<TimerQueue> timer_queue_;
+    // 负责任务调度工作
+    int wakeup_fd_;
+    std::shared_ptr<Channel> wakeup_channel_;
+    std::mutex mutex_;
+    std::vector<define::IOEventCallback> pending_tasks_;
 };
 
 

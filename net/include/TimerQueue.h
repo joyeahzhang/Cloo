@@ -27,7 +27,14 @@ class EventLoop;
 
 // TimerQueue的设计理念是将“定时事件”看作普通的IO事件, 统一交给IO多路复用组件来管理.
 // 帮助我们实现这一点的key point是linux timerfd, 它是一个文件描述符，它允许您创建一个定时器,
-// 当定时器到期时，它将向文件描述符发送一个事件, IO多路复用组件可以感知到这个事件并通知用户。
+// 我们总是将TimerQueue中接下来最早到期的Timer的过期时间作为timerfd的定时时间, 然后将timerfd加入到IO多路复用组件中。
+// 当timerfd相关的定时器到期时，它将向文件描述符发送一个事件, IO多路复用组件可以感知到这个事件并通知用户。
+
+// TimerQueue拥有四个成员变量, 分别是一个timerfd, 一个与timerfd绑定的Channel, 一个存放Timer的Set
+// 和一个指向TimerQueue所属的EventLoop的指针。
+// 在这四个成员变量中, TimerQueue不对任何一个变量拥有唯一所有权, 理由是: timerfd需要与IO多路复用组件共享, Channel需要
+// 与EventLoop共享, Timer需要与用户共享, 执行EventLoop的指针更不必说。
+
 class TimerQueue
 {
 
@@ -36,7 +43,7 @@ public:
     TimerQueue(const std::shared_ptr<EventLoop>& loop);
     ~TimerQueue();
 
-    // 不可拷贝
+    // 不可拷贝与移动
     TimerQueue(const TimerQueue&) = delete;
     TimerQueue(const TimerQueue&&) = delete;
     TimerQueue& operator=(const TimerQueue&) = delete;
@@ -47,10 +54,11 @@ public:
     // 即cb会在when,when+interval_ms,when+interval_ms*2...等时间点被调用
     // 这个函数可能被其他线程(非TimerQueue所属的IO线程)中被调用,因此必须做到线程安全
     TimerId AddTimer(const define::TimerCallback& cb, define::SystemTimePoint when, long interval_ms);
-    
     void Cancel(const TimerId& timer_id);
 
 private:
+
+    void AddTimerInLoop(const std::shared_ptr<Timer>& timer);
 
     using Entry = std::pair<define::SystemTimePoint, std::shared_ptr<Timer>>;
     // 自定义的set的比较函数
