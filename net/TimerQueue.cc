@@ -104,19 +104,25 @@ TimerQueue::~TimerQueue()
 
 TimerId TimerQueue::AddTimer(const define::TimerCallback &cb, define::SystemTimePoint when, long interval_ms)
 {
+    auto timer = make_shared<Timer>(cb, when, interval_ms);
+    if(auto loop = owner_loop_.lock())
+    {
+        loop->RunTaskInThisLoop(bind(&TimerQueue::AddTimerInLoop,this,timer));
+    }
+    return TimerId(timer);
+}
+
+void TimerQueue::AddTimerInLoop(const shared_ptr<Timer>& timer)
+{
     if(auto loop = owner_loop_.lock())
     {
         loop->AssertInLoopTread();
     }
-
-    auto timer = make_shared<Timer>(cb, when, interval_ms);
-    
-    if(auto IsEarliest = Insert(timer); IsEarliest)
+    bool is_earlist = Insert(timer);
+    if(is_earlist)
     {
         ResetTimerFd(timer_fd_, timer->Expiration());
     }
-
-    return TimerId(timer);
 }
 
 void TimerQueue::Cancel(const TimerId& timer_id)
