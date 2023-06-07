@@ -1,0 +1,112 @@
+[
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/Acceptor_test.dir/test/Acceptor_test.cc.o -c /root/Cloo/test/Acceptor_test.cc",
+  "file": "/root/Cloo/test/Acceptor_test.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/Acceptor_test.dir/net/Acceptor.cc.o -c /root/Cloo/net/Acceptor.cc",
+  "file": "/root/Cloo/net/Acceptor.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/Acceptor_test.dir/net/Channel.cc.o -c /root/Cloo/net/Channel.cc",
+  "file": "/root/Cloo/net/Channel.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/Acceptor_test.dir/net/EventLoop.cc.o -c /root/Cloo/net/EventLoop.cc",
+  "file": "/root/Cloo/net/EventLoop.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/Acceptor_test.dir/net/EventLoopThread.cc.o -c /root/Cloo/net/EventLoopThread.cc",
+  "file": "/root/Cloo/net/EventLoopThread.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/Acceptor_test.dir/net/Poller.cc.o -c /root/Cloo/net/Poller.cc",
+  "file": "/root/Cloo/net/Poller.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/Acceptor_test.dir/net/Socket.cc.o -c /root/Cloo/net/Socket.cc",
+  "file": "/root/Cloo/net/Socket.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/Acceptor_test.dir/net/SocketAddress.cc.o -c /root/Cloo/net/SocketAddress.cc",
+  "file": "/root/Cloo/net/SocketAddress.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/Acceptor_test.dir/net/Timer.cc.o -c /root/Cloo/net/Timer.cc",
+  "file": "/root/Cloo/net/Timer.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/Acceptor_test.dir/net/TimerId.cc.o -c /root/Cloo/net/TimerId.cc",
+  "file": "/root/Cloo/net/TimerId.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/Acceptor_test.dir/net/TimerQueue.cc.o -c /root/Cloo/net/TimerQueue.cc",
+  "file": "/root/Cloo/net/TimerQueue.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/TimerQueue_test.dir/test/TimerQueue_test.cc.o -c /root/Cloo/test/TimerQueue_test.cc",
+  "file": "/root/Cloo/test/TimerQueue_test.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/TimerQueue_test.dir/net/Acceptor.cc.o -c /root/Cloo/net/Acceptor.cc",
+  "file": "/root/Cloo/net/Acceptor.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/TimerQueue_test.dir/net/Channel.cc.o -c /root/Cloo/net/Channel.cc",
+  "file": "/root/Cloo/net/Channel.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/TimerQueue_test.dir/net/EventLoop.cc.o -c /root/Cloo/net/EventLoop.cc",
+  "file": "/root/Cloo/net/EventLoop.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/TimerQueue_test.dir/net/EventLoopThread.cc.o -c /root/Cloo/net/EventLoopThread.cc",
+  "file": "/root/Cloo/net/EventLoopThread.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/TimerQueue_test.dir/net/Poller.cc.o -c /root/Cloo/net/Poller.cc",
+  "file": "/root/Cloo/net/Poller.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/TimerQueue_test.dir/net/Socket.cc.o -c /root/Cloo/net/Socket.cc",
+  "file": "/root/Cloo/net/Socket.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/TimerQueue_test.dir/net/SocketAddress.cc.o -c /root/Cloo/net/SocketAddress.cc",
+  "file": "/root/Cloo/net/SocketAddress.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/TimerQueue_test.dir/net/Timer.cc.o -c /root/Cloo/net/Timer.cc",
+  "file": "/root/Cloo/net/Timer.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/TimerQueue_test.dir/net/TimerId.cc.o -c /root/Cloo/net/TimerId.cc",
+  "file": "/root/Cloo/net/TimerId.cc"
+},
+{
+  "directory": "/root/Cloo/build",
+  "command": "/usr/bin/c++  -I/root/Cloo/net/include -std=gnu++17 -o CMakeFiles/TimerQueue_test.dir/net/TimerQueue.cc.o -c /root/Cloo/net/TimerQueue.cc",
+  "file": "/root/Cloo/net/TimerQueue.cc"
+}
+]
